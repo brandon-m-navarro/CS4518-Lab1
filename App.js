@@ -55,14 +55,6 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 10,
     },
-    view2: {
-        marginTop: 100,
-        backgroundColor: 'red',
-        width: width - 80,
-        margin: 10,
-        height: 200,
-        borderRadius: 10,
-    },
     button: {
         width: 50,
         height: 50,
@@ -115,7 +107,6 @@ class HomeScreen extends Component {
           <View style={{ flex:2, justifyContent: "center",
                          backgroundColor: '#525564'}}>
                          <ScrollView
-                             ref={(scrollView) => { this.scrollView = scrollView; }}
                              style={styles.container}
                              pagingEnabled={true}
                              horizontal= {true}
@@ -168,7 +159,6 @@ class AboutScreen extends Component {
 class AboutItem extends Component {
     render() {
         return (
-
             <View style={{flexDirection: 'row'}}>
             <Text style={{position:'absolute', left: 75, bottom: 10, color:'white'}}>
                 {this.props.content}
