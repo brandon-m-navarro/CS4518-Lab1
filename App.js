@@ -100,7 +100,7 @@ class HomeScreen extends Component {
                               type='github'
                               title='Visit my Github!'
                               onPress={() => {
-                                  Linking.openURL('https://github.com/brandon-m-navarro')
+                                  Linking.openURL('https://github.com/brandon-m-navarro/CS4518-Lab1')
                               }}
                         />
                             <Text style={{color:'white'}}>Github</Text>
