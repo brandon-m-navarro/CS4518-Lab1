@@ -10,7 +10,7 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
 // Project
-import styles from './StyleSheet';
+import styles from './StyleSheet.js';
 
 // imageSrc
 import dessert from './assets/Dessert.jpeg';
@@ -22,17 +22,54 @@ import logo from './assets/react-logo.png';
 import Constants from 'expo-constants';
 const { width, height } = Dimensions.get('window');
 
+// Database that is initialized at runtime
+var accounts = [
+    {
+        username: 'user',
+        password: 'password'
+    },
+    {
+        username: 'airbud',
+        password: 'dunk'
+    }
+];
+
 class HomeScreen extends Component {
 
     state = {
       modalVisible: false,
       username: '',
       password: '',
+      loggedOn: '',
+      message: 'Welcome!',
+      error: '',
     };
 
     setModalVisible(visible) {
       this.setState({modalVisible: visible});
     }
+
+    authenticateUser(username, password) {
+         var valid = false;
+         for (var i = 0; i < accounts.length; i++) {
+             if (username == accounts[i].username) {
+                 if (password == accounts[i].password) {
+                     valid = true;
+                     break;
+                 }
+             }
+             continue;
+         }
+
+         if (valid) {
+             this.setState({loggedOn: 'none'});
+             this.setState({message: "Logged In!"});
+             this.setModalVisible(!this.state.modalVisible);
+         } else {
+             this.setState({error: "invalid credentials"});
+         }
+    }
+
 
 
     render() {
@@ -43,12 +80,11 @@ class HomeScreen extends Component {
           <View style={{ flex:4, backgroundColor: '#74828F'}}>
                 <Tile
                       imageSrc={logo}
-                      title="Welcome!"
+                      title={this.state.message}
                       featured
                       caption="My First React Native Application"
                 />
                 <Divider style={{ backgroundColor: '#BEB9B5', height:2 }} />
-
                 <View style={{ flexDirection:'row', justifyContent:'space-around', marginTop:15}}>
                     <TouchableOpacity
                         onPress={() => {
@@ -75,7 +111,7 @@ class HomeScreen extends Component {
                                      marginTop: height / 2.5 }}>
                         <View>
                           <TouchableHighlight
-                              style={{ marginLeft: 15, marginTop: 15}}
+                             style={{ marginLeft: 15, marginTop: 15}}
                              onPress={() => {
                                this.setModalVisible(!this.state.modalVisible);
                              }}>
@@ -89,7 +125,9 @@ class HomeScreen extends Component {
                                        alignItems: 'center' }}>
                                 <Text style={{ fontSize: 16 }}>Login</Text>
                                 <TextInput
-                                  style={{ height: 40 }}
+                                  autoCapitalize='none'
+                                  autoCorrect={false}
+                                  style={{ height: 40 , width: '50%' }}
                                   placeholder="Type here to translate!"
                                   onChangeText={(username) => this.setState({username})}
                                   value={this.state.username}
@@ -101,28 +139,40 @@ class HomeScreen extends Component {
                                        marginTop: 15}}>
                             <Text style={{ fontSize: 16 }}>Password</Text>
                             <TextInput
-                              style={{height: 40}}
+                              autoCapitalize='none'
+                              autoCorrect={false}
+                              secureTextEntry={true}
+                              style={{height: 40, width: '50%' }}
                               placeholder="Enter Password"
                               onChangeText={(password) => this.setState({password})}
                               value={this.state.password}
                             />
+                            <TouchableHighlight
+                               onPress={() => {
+                                 this.authenticateUser(this.state.username, this.state.password);
+                               }}>
+                               <Icon
+                                 name='sign-in'
+                                 size={25}
+                                 color='black'
+                               />
+                            </TouchableHighlight>
+                            <Text style={{ color:'red' }}>{this.state.error}</Text>
                         </View>
                       </View>
                     </Modal>
                     <View style={{ justifyContent: 'center', alignItems:'center' }}>
-                    <Icon
-                         name='sign-in'
-                         size={35}
-                         color='black'
-                         onPress={() => {
-                           this.setModalVisible(true);
-                         }}
-                    />
-                <Text style={{ color:'white' }}>
-                        Sign In / Register
-                    </Text>
+                        <Icon
+                            title='Login'
+                            name='sign-in'
+                            size={64}
+                            onPress={ () => {
+                                this.setModalVisible(true);
+                            }}>
+                        </Icon>
+                        <Text style={{ color:'white' }}>Sign Out</Text>
                     </View>
-                    <View style={{alignItems:'center'}}>
+                    <View style={{ alignItems:'center' }}>
                         <SocialIcon
                               type='github'
                               title='Visit my Github!'
@@ -151,16 +201,32 @@ class HomeScreen extends Component {
                    bottom: 0,
                    right: 30,
                  }}>
-                     <View style={styles.view}>
-                         <ProfilePic/>
+                     <View style={{ backgroundColor: 'blue',
+                                    width: width - 80,
+                                    margin: 10,
+                                    height: 200,
+                                    borderRadius: 10 }}>
+                         <Image source={dessert} style={{width: 335, height: 200}}/>
                      </View>
-                         <View style={styles.view}>
-                             <Image source={hershey} style={{width: 335, height: 200}}/>
-                         </View>
-                     <View style={styles.view}>
+                     <View style={{ backgroundColor: 'blue',
+                                    width: width - 80,
+                                    margin: 10,
+                                    height: 200,
+                                    borderRadius: 10 }}>
+                         <Image source={hershey} style={{width: 335, height: 200}}/>
+                     </View>
+                     <View style={{ backgroundColor: 'blue',
+                                    width: width - 80,
+                                    margin: 10,
+                                    height: 200,
+                                    borderRadius: 10 }}>
                          <Image source={tree} style={{width: 335, height: 200}}/>
                      </View>
-                     <View style={styles.view}>
+                     <View style={{ backgroundColor: 'blue',
+                                    width: width - 80,
+                                    margin: 10,
+                                    height: 200,
+                                    borderRadius: 10 }}>
                          <Image source={patrick} style={{width: 335, height: 200}}/>
                      </View>
              </ScrollView>
@@ -188,6 +254,56 @@ class AboutScreen extends Component {
     }
 }
 
+class ManageButton extends Component {
+
+    login () {
+        this.setState(previousState => (
+            { isShowingLogin: !previousState.isShowingLogin }
+        ))
+    }
+
+    state = {
+        isShowingLogin: true
+    };
+
+    render () {
+        if (this.state.isShowingLogin) {
+            return (
+                <View>
+                    <Icon
+                         name='sign-in'
+                         size={35}
+                         color='black'
+                         onPress={ () => {
+                             this.login();
+
+                         }}
+                    />
+                    <Text style={{ color:'white' }}>
+                        Sign In
+                    </Text>
+                </View>
+            )
+        } else {
+            return (
+            <View>
+                <Icon
+                     name='sign-out'
+                     size={35}
+                     color='black'
+                     onPress={ () => {
+                         this.login();
+                     }}
+                 />
+                <Text style={{ color:'white' }}>
+                    Sign Out
+                </Text>
+            </View>
+            )
+        }
+    }
+}
+
 class AboutItem extends Component {
     render() {
         return (
@@ -210,54 +326,10 @@ class AboutItem extends Component {
     }
 }
 
-
-class LoginScreen extends Component {
-
-    // state = {
-    //   modalVisible: false,
-    // };
-    //
-    // setModalVisible(visible) {
-    //   this.setState({modalVisible: visible});
-    // }
-//
-    // constructor(props) {
-    //   super(props);
-    //   this.state = {text: ''};
-    // }
-    //
-    // render() {
-    //    return (
-    //      <View style={{padding: 10}}>
-    //        <TextInput
-    //          style={{height: 40}}
-    //          placeholder="Type here to translate!"
-    //          onChangeText={(text) => this.setState({text})}
-    //          value={this.state.text}
-    //        />
-    //        <Text style={{padding: 10, fontSize: 42}}>
-    //          {this.state.text.split(' ').map((word) => word && '🍕').join(' ')}
-    //        </Text>
-    //      </View>
-    //    );
-    //  }
-}
-
-
-class ProfilePic extends Component {
-  render() {
-    return (
-      <Image source={dessert} style={{width: 335, height: 200}}/>
-    );
-  }
-}
-
-
 const MainNavigator = createStackNavigator(
 {
   Home: {screen: HomeScreen},
   About: {screen: AboutScreen},
-  Login: {screen: LoginScreen},
 },
 {
   initialRouteName: 'Home',
