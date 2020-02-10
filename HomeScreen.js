@@ -92,6 +92,20 @@ export default class HomeScreen extends Component {
                         featured
                         caption="My First React Native Application"
                         />
+                    <View style={{ flexDirection:'row', justifyContent:'space-around' }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigate('Task')
+                            }}>
+                            <Text style={{ alignSelf:'center', color:'white', backgroundColor:'#6497b1', borderRadius:50, width:'250%', textAlign:'center'  }}>Create Tasks</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigate('ViewTasks')
+                            }}>
+                            <Text style={{ alignSelf:'center', color:'white', backgroundColor:'#6497b1', borderRadius:50, width:'280%', textAlign:'center' }}>View Tasks</Text>
+                        </TouchableOpacity>
+                    </View>
                     <Divider style={{ backgroundColor: '#BEB9B5', height:2 }} />
                     {/*
                         Begin rendering buttons
